@@ -58,24 +58,27 @@
             font-size: 2.2em;
         }
         .clock {
-            float: left;
-            overflow: hidden;
-            background-color: #fff;
-            color: #222;
-            border-radius: 30%; /* Sửa thành 50% để tròn hoàn hảo */
-            position: relative;
-            width: 20%;
-            height: 0;
-            padding-bottom: 20%;
-            margin: 3% 0 3% 4%;
-        }
-        .clock .num {
-            font-size: 350%;
-            font-weight: 700;
-            line-height: 1.9;
-            position: absolute;
-            top: 15%;
-            width: 100%;
+    float: left;
+    overflow: hidden;
+    background-color: #fff;
+    color: #222;
+    border-radius: 25px; /* Bo tròn góc giống hình ảnh của bạn */
+    width: 20%;
+    aspect-ratio: 1 / 1; /* Giúp khung luôn là hình vuông */
+    margin: 3% 0 3% 4%;
+    /* Bật Flexbox để căn chỉnh nội dung bên trong */
+    display: flex;
+    flex-direction: column;
+}
+.clock .num {
+    font-size: 350%;
+    font-weight: 700;
+    flex-grow: 1; /* Cho phép phần số chiếm hết không gian còn lại */
+    /* Dùng Flexbox để căn giữa số theo cả chiều ngang và dọc */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
         }
         .clock .text {
             font-size: 130%;
