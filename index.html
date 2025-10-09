@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đếm ngược Tết Nguyên Đán</title>
+    <style>
+        /* CSS giữ nguyên như cũ, không thay đổi */
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .countdown-container {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        #timer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .time-unit {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 100px;
+        }
+
+        .time-unit span {
+            display: block;
+            font-size: 3em;
+            font-weight: 700;
+        }
+
+        .time-unit .label {
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .countdown-container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            #timer {
+                flex-direction: column;
+            }
+            .time-unit {
+                min-width: auto;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="countdown-container">
+    <h1 id="countdown-title">🎆 Đang tải... 🎆</h1>
+    <p>Cùng đếm ngược khoảnh khắc giao thừa!</p>
+    <div id="timer">
+        <div class="time-unit">
+            <span id="days">00</span>
+            <div class="label">Ngày</div>
+        </div>
+        <div class="time-unit">
+            <span id="hours">00</span>
+            <div class="label">Giờ</div>
+        </div>
+        <div class="time-unit">
+            <span id="minutes">00</span>
+            <div class="label">Phút</div>
+        </div>
+        <div class="time-unit">
+            <span id="seconds">00</span>
+            <div class="label">Giây</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- PHẦN NÂNG CẤP BẮT ĐẦU TỪ ĐÂY ---
+
+    // Danh sách các ngày Tết Âm lịch (Mùng 1)
+    // Bạn có thể thêm các năm sau vào đây để nó hoạt động lâu dài
+    const tetDates = [
+        '2026-01-29', // Tết Bính Ngọ
+        '2027-02-17', // Tết Đinh Mùi
+        '2028-01-28', // Tết Mậu Thân
+        '2029-02-13', // Tết Kỷ Dậu
+        '2030-02-03', // Tết Canh Tuất
+    ];
+
+    function findNextTet() {
+        const now = new Date();
+        for (const dateString of tetDates) {
+            const tetDate = new Date(dateString + 'T00:00:00');
+            if (tetDate > now) {
+                return tetDate;
+            }
+        }
+        return null; // Trả về null nếu không tìm thấy ngày Tết nào trong tương lai
+    }
+
+    function startCountdown() {
+        const nextTetDate = findNextTet();
+
+        const titleEl = document.getElementById('countdown-title');
+        const timerEl = document.getElementById('timer');
+        
+        if (!nextTetDate) {
+            titleEl.innerHTML = "🎆 Hẹn gặp lại vào năm sau! 🎆";
+            timerEl.style.display = 'none';
+            return;
+        }
+
+        const tetYear = nextTetDate.getFullYear();
+        titleEl.innerHTML = `🎆 Đếm ngược đến Tết ${tetYear} 🎆`;
+        const tetTime = nextTetDate.getTime();
+
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+
+        const countdownInterval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = tetTime - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                titleEl.innerHTML = `🎉 CHÚC MỪNG NĂM MỚI ${tetYear}! 🎉`;
+                timerEl.style.display = 'none';
+                
+                // Tùy chọn: Tự động tải lại trang sau 10 giây để bắt đầu đếm ngược cho năm tiếp theo
+                setTimeout(() => {
+                    location.reload();
+                }, 10000); // 10 giây
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            daysEl.innerText = days.toString().padStart(2, '0');
+            hoursEl.innerText = hours.toString().padStart(2, '0');
+            minutesEl.innerText = minutes.toString().padStart(2, '0');
+            secondsEl.innerText = seconds.toString().padStart(2, '0');
+
+        }, 1000);
+    }
+
+    startCountdown();
+</script>
+
+</body>
+</html>
