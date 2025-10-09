@@ -10,6 +10,7 @@
     <meta property="og:description" content="Còn bao nhiêu ngày nữa đến Tết Nguyên Đán?"/>
     <link href="https://fonts.googleapis.com/css?family=Dancing+Script:400,700&amp;subset=vietnamese" rel="stylesheet">
     <style type="text/css">
+        /* --- PHẦN CSS HOÀN CHỈNH --- */
         html, body, div, span, h1, h2 {
             padding: 0;
             border: 0;
@@ -58,33 +59,30 @@
             font-size: 2.2em;
         }
         .clock {
-    float: left;
-    overflow: hidden;
-    background-color: #fff;
-    color: #222;
-    border-radius: 25px; /* Bo tròn góc giống hình ảnh của bạn */
-    width: 20%;
-    aspect-ratio: 1 / 1; /* Giúp khung luôn là hình vuông */
-    margin: 3% 0 3% 4%;
-    /* Bật Flexbox để căn chỉnh nội dung bên trong */
-    display: flex;
-    flex-direction: column;
-}
-.clock .num {
-    font-size: 350%;
-    font-weight: 700;
-    flex-grow: 1; /* Cho phép phần số chiếm hết không gian còn lại */
-    /* Dùng Flexbox để căn giữa số theo cả chiều ngang và dọc */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+            float: left;
+            overflow: hidden;
+            background-color: #fff;
+            color: #222;
+            border-radius: 25px; /* Bo tròn góc */
+            width: 20%;
+            aspect-ratio: 1 / 1; /* Giúp khung luôn là hình vuông */
+            margin: 3% 0 3% 4%;
+            display: flex;
+            flex-direction: column;
+        }
+        .clock .num {
+            font-size: 350%;
+            font-weight: 700;
+            flex-grow: 1; /* Cho phép phần số chiếm hết không gian còn lại */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .clock .text {
             font-size: 130%;
             text-transform: uppercase;
             background-color: #eee;
-            position: absolute;
+            position: relative;
             bottom: 0;
             width: 100%;
             line-height: 180%;
@@ -111,7 +109,7 @@
         @media (max-width: 480px) {
             .clock {
                 width: 35%;
-                padding-bottom: 35%;
+                padding-bottom: 0; /* Bỏ padding-bottom cũ */
                 margin: 5% 0 0 10%;
             }
             h1 { margin-top: .55em; }
@@ -150,13 +148,13 @@
             </a>
         </div>
     </div>
+    
     <iframe src="https://www.nhaccuatui.com/lh/background/6DqYD1PatM8q" width="1" height="1" frameborder="0" allowfullscreen allow="autoplay" style="display:none"></iframe>
 
     <script>
-        // --- PHẦN JAVASCRIPT TỰ ĐỘNG CẬP NHẬT ---
+        // --- PHẦN JAVASCRIPT HOÀN CHỈNH ---
 
         // Danh sách các năm Tết và tên tương ứng
-        // Bạn có thể thêm các năm sau vào đây
         const tetData = [
             { date: '2026-01-29', name: 'Bính Ngọ' },
             { date: '2027-02-17', name: 'Đinh Mùi' },
@@ -173,13 +171,18 @@
                     return tet;
                 }
             }
-            return null; // Trả về null nếu hết danh sách
+            return null;
         }
 
         const nextTet = findNextTet();
 
         if (nextTet) {
-            document.getElementById('tentet').innerText = nextTet.name + ' ' + new Date(nextTet.date).getFullYear();
+            const tetFullName = `Tết ${nextTet.name} ${new Date(nextTet.date).getFullYear()}`;
+            const tetShortName = `Tết ${nextTet.name}`;
+            
+            document.getElementById('tentet').innerText = tetFullName;
+            document.title = `Đếm ngược đến ${tetFullName}`; 
+            
             const targetDate = new Date(nextTet.date).getTime();
 
             const countdown = setInterval(function() {
@@ -189,14 +192,15 @@
                 if (distance < 0) {
                     clearInterval(countdown);
                     document.getElementById('tetornot').innerHTML = "Chúc Mừng Năm Mới " + nextTet.name + "!";
+                    document.title = "🎉 Chúc Mừng Năm Mới! 🎉"; 
+                    
                     const clocks = document.querySelectorAll('.clock');
                     clocks.forEach(clock => {
-                        clock.classList.add('tet'); // Thêm class để đổi màu
+                        clock.classList.add('tet');
                         const numElement = clock.querySelector('.num');
                         if (numElement) numElement.innerHTML = "TẾT";
                     });
-                    // Tự động tải lại sau 1 phút để tìm năm mới
-                     setTimeout(() => location.reload(), 60000);
+                    setTimeout(() => location.reload(), 60000);
                     return;
                 }
 
@@ -205,15 +209,18 @@
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // Cập nhật các ô đồng hồ
                 document.getElementById('days').innerText = days;
                 document.getElementById('hours').innerText = hours;
                 document.getElementById('mins').innerText = minutes;
                 document.getElementById('secs').innerText = seconds;
 
+                // Cập nhật tiêu đề của trang web mỗi giây
+                document.title = `${days}d ${hours}h ${minutes}m ${seconds}s | ${tetShortName}`;
+
             }, 1000);
         } else {
             document.getElementById('tetornot').innerText = "Hẹn gặp lại vào năm sau!";
+            document.title = "Hẹn gặp lại vào năm sau!";
         }
     </script>
 </body>
