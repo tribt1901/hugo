@@ -63,7 +63,7 @@ const auth = firebase.auth();
 // Nếu đã đăng nhập thì chuyển luôn tới subjects.html
 auth.onAuthStateChanged(function(user) {
   if (user) {
-    window.location.replace("subjects.html");
+    window.location.replace("qttb.html");
   }
 });
 
@@ -76,7 +76,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
   try {
     await auth.signInWithEmailAndPassword(email, password);
-    window.location.replace("subjects.html");
+    window.location.replace("qttb.html");
   } catch (err) {
     if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password") {
       errorMsg.textContent = "Sai thông tin đăng nhập!";
